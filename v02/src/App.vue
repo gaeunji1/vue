@@ -10,9 +10,11 @@ export default {
 </script>
 
 <template>
-  <h1>채널명 : {{ channel }}</h1>
+  <h1 v-pre>채널명 : {{ channel }}</h1>
   <h3>구독자 수 : {{ subscribe }}</h3>
   <p>{{ `오늘의 행운 숫자 : ` + Math.ceil(Math.random() * 45) }}</p>
+  <h1 v-html="channel"></h1>
+  <h2 v-text="subscribe"></h2>
 </template>
 
 <style></style>
