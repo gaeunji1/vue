@@ -2,16 +2,17 @@
 export default {
   data() {
     return {
-      sports: ['BaseBall', 'Football', 'Volleyball', 'Tennis'],
+      count: 0,
     };
   },
 };
 </script>
 
 <template>
-  <ul>
-    <li v-for="(sport, index) in sports">{{ index + 1 }} {{ sport }}</li>
-  </ul>
+  <p>{{ 'count : ' + count }}</p>
+  <button v-on:click="count++">숫자 증가</button>
+  <button v-on:click="count--">숫자 감소</button>
+  <button v-on:mouseover="count = 0">0으로 초기화</button>
 </template>
 
 <style></style>
