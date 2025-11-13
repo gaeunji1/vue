@@ -1,35 +1,48 @@
-<template>
-  <div>
-    <p>Full Name : {{ fullName }}</p>
-    <input v-model="fullName" placeholder="Enter full name" />
-
-    firstName:{{ firstName }}<br>
-    lastName:{{ lastName }}
-  </br>
-  </div>
-</template>
-
 <script>
 export default {
   data() {
     return {
-      firstName: 'John',
-      lastName: 'Doe',
+      count: 0,
+      y: "짝수",
     };
   },
-  computed: {
-    fullname: {
-      get() {
-        return this.firstName + ' ' + this.lastName;
+  methods: {
+    increment() {
+      this.count++;
+    },
+  },
+  // watch: {
+  //   count(newVal, oldVal) {
+  //     console.log(`Count charged from ${oldVal} to ${newVal}`);
+  //     if (newVal & (2 == 0)) {
+  //       this.y = "짝수";
+  //     } else {
+  //       this.y = "홀수";
+  //     }
+  //   },
+  // },
+  watch: {
+    count: {
+      handler(newVal, oldVal) {
+        console.log(`Count charged from ${oldVal} to ${newVal}`);
+        if (newVal & (2 == 0)) {
+          this.y = "짝수";
+        } else {
+          this.y = "홀수";
+        }
       },
-      set(newValue) {
-        const name = newValue.split(' ');
-        this.firstName = name[0];
-        this.lastName = names[names.length - 1];
-      },
+      once: true,
     },
   },
 };
 </script>
+
+<template>
+  <div>
+    <p>Count : {{ count }}</p>
+    <button @click="increment">increment</button>
+    <p>Result:{{ y }}</p>
+  </div>
+</template>
 
 <style></style>
