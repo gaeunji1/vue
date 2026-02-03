@@ -4,3 +4,4 @@ youtube vue 강의를 듣고 공부를 해보았습니다.
 - xptmxm
 - 두근
 - url 체크
+- 다시 체크
