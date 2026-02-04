@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>bluefox — Team workflow, sharpened.</title>
+  <meta name="description" content="bluefox: 부하테스트, 빠른 PR 체크, 코드 리뷰, 회의까지. 팀의 개발 워크플로우를 더 선명하게." />
+  <style>
+    :root{
+      --bg:#07080C;
+      --panel: rgba(255,255,255,.04);
+      --panel2: rgba(255,255,255,.06);
+      --line: rgba(255,255,255,.10);
+      --line2: rgba(255,255,255,.14);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.60);
+      --muted2: rgba(255,255,255,.45);
+
+      --accent1:#8B5CF6;
+      --accent2:#22D3EE;
+      --accent3:#34D399;
+
+      --radius:16px;
+      --shadow: 0 24px 60px rgba(0,0,0,.55);
+      --shadow2: 0 12px 30px rgba(0,0,0,.35);
+
+      --container: 1120px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 600px at 18% 8%, rgba(139,92,246,.22), transparent 55%),
+        radial-gradient(800px 520px at 82% 18%, rgba(34,211,238,.18), transparent 55%),
+        radial-gradient(900px 600px at 55% 92%, rgba(52,211,153,.10), transparent 60%),
+        linear-gradient(180deg, #05060A, var(--bg) 60%, #05060A);
+      overflow-x:hidden;
+    }
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width:var(--container); margin:0 auto; padding:0 22px; }
+
+    /* subtle grain */
+    .grain:before{
+      content:"";
+      position:fixed; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E");
+      opacity:.06;
+      pointer-events:none;
+      mix-blend-mode:overlay;
+      z-index:0;
+    }
+
+    /* nav */
+    header{
+      position:sticky; top:0; z-index:30;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(5,6,10,.85), rgba(5,6,10,.35));
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      height:58px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:800; letter-spacing:.2px;
+    }
+    .logo{
+      width:28px; height:28px; border-radius:10px;
+      background:
+        radial-gradient(10px 10px at 35% 35%, rgba(255,255,255,.85), rgba(255,255,255,0) 60%),
+        linear-gradient(135deg, rgba(139,92,246,.95), rgba(34,211,238,.80));
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 14px 34px rgba(139,92,246,.18);
+    }
+    nav{
+      display:flex; gap:14px;
+      color: var(--muted);
+      font-weight:650;
+      font-size:13px;
+    }
+    nav a{
+      padding:8px 10px;
+      border-radius:10px;
+    }
+    nav a:hover{
+      color: var(--text);
+      background: rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      padding:7px 9px;
+    }
+    .nav-cta{ display:flex; gap:10px; align-items:center; }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      font-weight:750;
+      font-size:13px;
+      transition: transform .15s ease, border-color .15s ease, background .15s ease, filter .15s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: var(--line2);
+      background: rgba(255,255,255,.05);
+    }
+    .btn.primary{
+      border-color: rgba(34,211,238,.35);
+      background: linear-gradient(135deg, rgba(139,92,246,.90), rgba(34,211,238,.72));
+      box-shadow: 0 18px 44px rgba(34,211,238,.10), 0 12px 26px rgba(139,92,246,.12);
+    }
+    .btn.primary:hover{ filter: brightness(1.06); }
+
+    /* hero */
+    main{ position:relative; z-index:1; }
+    .hero{ padding:64px 0 28px; }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+      font-size:12px;
+      font-weight:750;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent3), var(--accent2));
+      box-shadow: 0 0 0 4px rgba(34,211,238,.10);
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size: clamp(34px, 4.6vw, 58px);
+      letter-spacing: -0.8px;
+      line-height: 1.02;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      line-height:1.75;
+      font-size: 16px;
+      max-width: 58ch;
+    }
+    .hero-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+
+    /* sections */
+    .section{ padding:28px 0; }
+    .section-head{
+      display:flex; align-items:flex-end; justify-content:space-between;
+      gap:16px;
+      margin-bottom:14px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.2px;
+    }
+    .section-head p{
+      margin:0;
+      color: var(--muted2);
+      font-weight:650;
+      font-size:13px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, minmax(0,1fr));
+      gap:12px;
+    }
+    .card{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+    }
+    .card-inner{ padding:16px; }
+    .card:hover{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.04);
+    }
+    .kicker{
+      color: var(--muted2);
+      font-size:12px;
+      font-weight:800;
+      letter-spacing:.2px;
+      text-transform: uppercase;
+    }
+    .card h3{
+      margin:8px 0 8px;
+      font-size:15px;
+      letter-spacing:-.2px;
+    }
+    .card p{
+      margin:0;
+      color: var(--muted);
+      font-size:14px;
+      line-height:1.65;
+    }
+
+    .chip{
+      display:inline-flex;
+      margin-top:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.72);
+      font-size:12px;
+      font-weight:750;
+    }
+
+    .feature{
+      grid-column: span 3;
+      position:relative;
+    }
+    .feature:before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(380px 180px at 18% 18%, rgba(139,92,246,.18), transparent 60%),
+        radial-gradient(360px 180px at 78% 22%, rgba(34,211,238,.12), transparent 60%);
+      opacity:.65;
+      pointer-events:none;
+    }
+    .feature > .card-inner{ position:relative; }
+
+    /* showcase */
+    .showcase{
+      grid-column: span 12;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:12px;
+    }
+    .mock{
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .mock-top{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.72);
+      font-size:12px;
+      font-weight:700;
+    }
+    .lights{ display:flex; gap:6px; }
+    .light{
+      width:9px; height:9px; border-radius:999px;
+      background: rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .mock-body{ padding:14px; }
+    .row{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 12px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+      border-radius: 14px;
+      margin-bottom:10px;
+    }
+    .row:last-child{ margin-bottom:0; }
+    .row b{ font-size:13px; }
+    .row span{ color: var(--muted); font-weight:650; font-size:12px; }
+    .status{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px;
+      border-radius: 999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.80);
+      font-size:12px;
+      font-weight:750;
+      white-space:nowrap;
+    }
+
+    /* CTA */
+    .cta{
+      grid-column: span 12;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px;
+      padding:18px;
+      background:
+        radial-gradient(600px 240px at 30% 10%, rgba(139,92,246,.18), transparent 55%),
+        radial-gradient(520px 260px at 80% 20%, rgba(34,211,238,.14), transparent 55%),
+        rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .cta h3{ margin:0; font-size:16px; letter-spacing:-.2px; }
+    .cta p{ margin:6px 0 0; color: var(--muted); font-size:14px; line-height:1.6; }
+    .cta-left{ max-width: 62ch; }
+
+    /* footer */
+    footer{
+      margin-top:26px;
+      padding:28px 0 34px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      background: linear-gradient(180deg, rgba(5,6,10,0), rgba(5,6,10,.65));
+    }
+    .foot{
+      display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap;
+    }
+    .foot-links{ display:flex; gap:10px; flex-wrap:wrap; }
+    .foot-links a{
+      padding:8px 10px;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.02);
+      color: rgba(255,255,255,.70);
+      font-size:12px;
+      font-weight:700;
+    }
+    .foot-links a:hover{ background: rgba(255,255,255,.04); }
+
+    /* reveal */
+    .reveal{ opacity:0; transform: translateY(10px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.show{ opacity:1; transform: translateY(0); }
+
+    @media (max-width: 980px){
+      nav{ display:none; }
+      .showcase{ grid-template-columns: 1fr; }
+      .feature{ grid-column: span 6; }
+    }
+    @media (max-width: 540px){
+      .feature{ grid-column: span 12; }
+      .cta{ flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+</head>
+<body class="grain">
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="bluefox home">
+        <span class="logo" aria-hidden="true"></span>
+        <span>bluefox</span>
+      </a>
+
+      <nav aria-label="primary">
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#cta">Get started</a>
+      </nav>
+
+      <div class="nav-cta">
+        <button class="btn" id="copyBtn" title="copy domain">bluefox <span style="opacity:.6">Copy</span></button>
+        <a class="btn primary" href="#cta">Request demo</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <div class="reveal">
+          <span class="badge"><span class="dot" aria-hidden="true"></span> Workflow hub for fast-moving teams</span>
+          <h1>Team workflow, sharpened.</h1>
+          <p class="lead">
+            부하테스트 · 빠른 PR 체크 · 코드 리뷰 · 회의.
+            개발팀이 “확인하느라 느려지는 구간”을 하나의 흐름으로 정리합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#features">Explore features</a>
+            <a class="btn" href="#workflow">See workflow</a>
+          </div>
+        </div>
+
+        <section class="section" id="features">
+          <div class="section-head reveal">
+            <div>
+              <h2>Features</h2>
+              <p>네 가지를 “한 화면의 언어”로 통일</p>
+            </div>
+          </div>
+
+          <div class="grid">
+            <article class="card feature reveal">
+              <div class="card-inner">
+                <div class="kicker">Load testing</div>
+                <h3>부하테스트를 리포트로 정리</h3>
+                <p>결과를 공유 가능한 형태로 만들고, 팀이 같은 숫자를 보고 판단하게 합니다.</p>
+                <span class="chip">Report-first</span>
+              </div>
+            </article>
+
+            <article class="card feature reveal">
+              <div class="card-inner">
+                <div class="kicker">PR status</div>
+                <h3>빠른 PR 체크로 누락 제거</h3>
+                <p>대기/충돌/리뷰 필요 PR만 빠르게 훑고, 처리 우선순위를 명확히 합니다.</p>
+                <span class="chip">Fast scan</span>
+              </div>
+            </article>
+
+            <article class="card feature reveal">
+              <div class="card-inner">
+                <div class="kicker">Code review</div>
+                <h3>리뷰 신호만 남기기</h3>
+                <p>핵심 코멘트와 결론을 남겨서, 리뷰가 “결정”으로 끝나게 돕습니다.</p>
+                <span class="chip">Signal &amp; decision</span>
+              </div>
+            </article>
+
+            <article class="card feature reveal">
+              <div class="card-inner">
+                <div class="kicker">Meeting</div>
+                <h3>컨텍스트를 들고 회의로</h3>
+                <p>이슈 흐름을 유지한 채 회의에 들어가고, 액션과 담당을 남깁니다.</p>
+                <span class="chip">Context in</span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section" id="workflow">
+          <div class="section-head reveal">
+            <div>
+              <h2>Workflow</h2>
+              <p>업무가 이어지게 만드는 기본 루프</p>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="showcase reveal">
+              <div class="mock">
+                <div class="mock-top">
+                  <div class="lights" aria-hidden="true">
+                    <span class="light"></span><span class="light"></span><span class="light"></span>
+                  </div>
+                  <div>bluefox / control room</div>
+                </div>
+                <div class="mock-body">
+                  <div class="row">
+                    <div>
+                      <b>Load test</b><br/>
+                      <span>P95 182ms · Error 0.2%</span>
+                    </div>
+                    <span class="status"><span class="dot" aria-hidden="true"></span> Completed</span>
+                  </div>
+                  <div class="row">
+                    <div>
+                      <b>PR queue</b><br/>
+                      <span>3 waiting · 1 conflict</span>
+                    </div>
+                    <span class="status">Needs review</span>
+                  </div>
+                  <div class="row">
+                    <div>
+                      <b>Review</b><br/>
+                      <span>12 comments · 2 decisions</span>
+                    </div>
+                    <span class="status">Focused</span>
+                  </div>
+                  <div class="row">
+                    <div>
+                      <b>Meeting</b><br/>
+                      <span>Agenda ready · Context linked</span>
+                    </div>
+                    <span class="status">Join</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card" style="align-self:stretch;">
+                <div class="card-inner" style="height:100%;">
+                  <div class="kicker">The loop</div>
+                  <h3>확인 → 공유 → 결정</h3>
+                  <p style="margin-top:10px;">
+                    bluefox는 팀이 매번 반복하는 “확인 비용”을 줄이고,
+                    결정이 빨라지는 방향으로 화면과 흐름을 정리합니다.
+                  </p>
+
+                  <div s
+aaaaaaaaaaaaaaaaaaaaa
