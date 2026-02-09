@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Store | 알라딘 느낌(긴 페이지)</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --surface:#ffffff;
+      --surface2:#fbfbfd;
+      --text:#111827;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#1d4ed8;
+      --brand2:#2563eb;
+      --brandSoft:#eff6ff;
+      --danger:#dc2626;
+      --ok:#16a34a;
+      --shadow: 0 10px 30px rgba(17,24,39,.08);
+      --shadow2: 0 6px 18px rgba(17,24,39,.06);
+      --radius: 14px;
+      --radius2: 12px;
+      --max: 1180px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      background: linear-gradient(180deg, #ffffff, var(--bg));
+      color:var(--text);
+    }
+    a{color:inherit; text-decoration:none}
+    button{font:inherit}
+    input,select{font:inherit}
+
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 20px 60px}
+
+    /* Top promo strip */
+    .promo{
+      background: #111827;
+      color:#fff;
+      font-size:12px;
+    }
+    .promo .inner{
+      max-width:var(--max); margin:0 auto; padding:8px 20px;
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+      opacity:.95;
+    }
+    .promo a{color:#fff; text-decoration:underline; text-underline-offset:2px}
+
+    header{
+      position:sticky; top:0; z-index:30;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .topbar{
+      max-width:var(--max); margin:0 auto; padding:14px 20px;
+      display:flex; gap:12px; align-items:center;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      min-width:220px;
+    }
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      box-shadow: 0 10px 20px rgba(37,99,235,.18);
+      display:grid; place-items:center;
+    }
+    .brand .title{font-weight:900; letter-spacing:.2px}
+    .brand .sub{display:block; font-size:12px; color:var(--muted); margin-top:2px}
+
+    .searchArea{
+      flex:1;
+      display:flex; align-items:center; gap:10px;
+      max-width:720px;
+    }
+    .search{
+      flex:1;
+      position:relative;
+    }
+    .search input{
+      width:100%;
+      padding:12px 14px 12px 42px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: #fff;
+      color:var(--text);
+      outline:none;
+      transition:.15s ease;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.02);
+    }
+    .search input:focus{
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.14);
+    }
+    .search .icon{
+      position:absolute; left:14px; top:50%; transform:translateY(-50%);
+      color:#6b7280; pointer-events:none;
+    }
+    .select, .sort{
+      padding:11px 12px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      outline:none;
+    }
+
+    .actions{
+      display:flex; gap:10px; align-items:center; margin-left:auto;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:.15s ease;
+      display:inline-flex; align-items:center; gap:8px;
+      box-shadow: 0 2px 0 rgba(17,24,39,.02);
+    }
+    .btn:hover{transform:translateY(-1px); box-shadow: var(--shadow2)}
+    .btn.primary{
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 14px 28px rgba(37,99,235,.18);
+    }
+    .badge{
+      min-width:20px; height:20px; padding:0 6px;
+      border-radius:999px;
+      background: rgba(255,255,255,.22);
+      border:1px solid rgba(255,255,255,.25);
+      display:inline-grid; place-items:center;
+      font-size:12px;
+      color:#fff;
+    }
+    .btn:not(.primary) .badge{
+      background:#eef2ff;
+      border-color:#e5e7eb;
+      color:#111827;
+    }
+
+    /* Nav */
+    .nav{
+      max-width:var(--max); margin:0 auto; padding:10px 20px;
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      border-top:1px solid rgba(0,0,0,.02);
+    }
+    .chip{
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#111827;
+      font-size:12px;
+      cursor:pointer;
+      transition:.12s ease;
+      white-space:nowrap;
+    }
+    .chip:hover{background:var(--surface2)}
+    .chip.on{
+      border-color: rgba(37,99,235,.4);
+      background: var(--brandSoft);
+      color: #1d4ed8;
+      font-weight:800;
+    }
+
+    main{padding:18px 0 50px}
+
+    /* Sections */
+    .sectionTop{
+      margin-top:18px;
+      display:flex; justify-content:space-between; gap:10px; align-items:center;
+    }
+    .sectionTop h2{margin:0; font-size:16px}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 11px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#374151;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:stretch;
+    }
+    .heroCard{
+      border:1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .heroCard h1{margin:0; font-size:22px}
+    .heroCard p{margin:8px 0 0; color:var(--muted); font-size:13px; line-height:1.5}
+    .statRow{
+      margin-top:14px;
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .stat{
+      border:1px solid var(--line);
+      background: var(--surface2);
+      border-radius: 12px;
+      padding:10px 12px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex; gap:8px; align-items:center;
+    }
+    .stat b{color:#111827}
+    .banner{
+      border:1px solid rgba(37,99,235,.25);
+      background: linear-gradient(135deg, var(--brandSoft), #ffffff);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+      display:flex; flex-direction:column; justify-content:space-between;
+      gap:10px;
+    }
+    .banner .title{font-weight:900}
+    .banner .desc{color:var(--muted); font-size:13px; line-height:1.5}
+    .banner .cta{display:flex; gap:10px; flex-wrap:wrap; align-items:center}
+    .linkBtn{
+      padding:10px 12px;
+      border-radius: 12px;
+      border:1px solid rgba(37,99,235,.25);
+      background:#fff;
+      color:#1d4ed8;
+      font-weight:800;
+      cursor:pointer;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .linkBtn:hover{background:var(--surface2)}
+
+    /* Product cards */
+    .grid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:12px;
+    }
+    .card{
+      grid-column: span 4;
+      border:1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      overflow:hidden;
+      display:flex;
+      gap:12px;
+      padding:12px;
+      min-height: 150px;
+    }
+    .cover{
+      width:92px; min-width:92px; height:126px;
+      border-radius: 10px;
+      border:1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(37,99,235,.10), rgba(17,24,39,.02)),
+        repeating-linear-gradient(45deg, rgba(0,0,0,.03) 0 8px, rgba(0,0,0,.01) 8px 16px);
+      position:relative;
+    }
+    .label{
+      position:absolute; top:8px; left:8px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-size:11px;
+      color:#374151;
+    }
+    .rating{
+      position:absolute; top:8px; right:8px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid var(--line);
+      font-size:11px;
+      color:#374151;
+      display:flex; gap:6px; align-items:center;
+    }
+    .info{display:flex; flex-direction:column; gap:6px; flex:1; min-width:0}
+    .name{
+      font-weight:900;
+      line-height:1.25;
+      font-size:14px;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .meta{color:var(--muted); font-size:12px; display:flex; flex-wrap:wrap; gap:8px}
+    .desc{
+      color:#374151;
+      font-size:12.5px;
+      line-height:1.45;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+    .row{
+      margin-top:auto;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .price{font-weight:950; font-size:14px}
+    .price small{color:var(--muted); font-weight:700}
+    .add{
+      padding:9px 11px;
+      border-radius: 12px;
+      border:1px solid rgba(37,99,235,.35);
+      background: var(--brandSoft);
+      color:#1d4ed8;
+      font-weight:900;
+      cursor:pointer;
+      transition:.12s ease;
+      display:inline-flex; gap:8px; align-items:center;
+      white-space:nowrap;
+    }
+    .add:hover{background:#dbeafe}
+
+    .empty{
+      margin-top:14px;
+      border:1px dashed #d1d5db;
+      background:#fff;
+      border-radius: var(--radius2);
+      padding:16px;
+      color:var(--muted);
+      display:none;
+    }
+
+    /* Side rails / long page widgets */
+    .longGrid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1fr 320px;
+      gap:14px;
+      align-items:start;
+    }
+    .box{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: var(--radius2);
+      box-shadow: var(--shadow2);
+      padding:14px;
+    }
+    .box h3{margin:0 0 10px; font-size:14px}
+    .list{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .mini{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface2);
+    }
+    .mini .dotCover{
+      width:44px; height:58px; border-radius:10px;
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(37,99,235,.14), rgba(17,24,39,.02));
+      flex:0 0 auto;
+    }
+    .mini .t{font-weight:900; font-size:12.5px; line-height:1.2}
+    .mini .s{color:var(--muted); font-size:12px; margin-top:4px}
+    .mini .buy{
+      margin-left:auto;
+      border:1px solid rgba(37,99,235,.3);
+      background:#fff;
+      color:#1d4ed8;
+      border-radius: 10px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .mini .buy:hover{background:#eff6ff}
+
+    .ads{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .ad{
+      border:1px solid var(--line);
+      background: linear-gradient(135deg, #fff, #f7fbff);
+      border-radius: 14px;
+      padding:12px;
+    }
+    .ad .k{font-weight:950}
+    .ad .d{color:var(--muted); font-size:12px; margin-top:6px; line-height:1.45}
+    .ad .cta{
+      margin-top:10px;
+      display:inline-flex; gap:8px; align-items:center;
+      padding:9px 10px;
+      border-radius: 12px;
+      border:1px solid rgba(37,99,235,.25);
+      background:#fff;
+      color:#1d4ed8;
+      font-weight:900;
+      cursor:pointer;
+      font-size:12px;
+    }
+    .ad .cta:hover{background:var(--surface2)}
+
+    /* Cart drawer */
+    .backdrop{
+      position:fixed; inset:0; z-index:60;
+      background: rgba(0,0,0,.35);
+      opacity:0; pointer-events:none;
+      transition:.18s ease;
+    }
+    .backdrop.on{opacity:1; pointer-events:auto}
+    .drawer{
+      position:fixed; top:0; right:0; height:100%; width:min(420px, 92vw);
+      z-index:70;
+      background: rgba(255,255,255,.98);
+      border-left:1px solid var(--line);
+      box-shadow: -18px 0 40px rgba(0,0,0,.12);
+      transform: translateX(102%);
+      transition:.22s ease;
+      display:flex; flex-direction:column;
+    }
+    .drawer.on{transform: translateX(0)}
+    .drawerTop{
+      padding:16px;
+      border-bottom:1px solid var(--line);
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+    .drawerTop .h{font-weight:950; display:flex; gap:10px; align-items:center}
+    .close{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      border-radius:999px;
+      cursor:pointer;
+      padding:8px 10px;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    .drawerBody{
+      padding:14px 16px;
+      overflow:auto;
+      flex:1;
+      background: linear-gradient(180deg, #fff, #fafafa);
+    }
+    .cart-empty{
+      border:1px dashed #d1d5db;
+      border-radius: var(--radius2);
+      padding:16px;
+      color:var(--muted);
+      background:#fff;
+    }
+    .item{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius: 14px;
+      padding:12px;
+      display:flex; flex-direction:column; gap:10px;
+      margin-bottom:10px;
+      box-shadow: 0 4px 10px rgba(17,24,39,.04);
+    }
+    .item .top{
+      display:flex; gap:10px; align-items:flex-start; justify-content:space-between;
+    }
+    .item .name{font-weight:950}
+    .item .sub{color:var(--muted); font-size:12px; margin-top:3px}
+    .item .right{display:flex; flex-direction:column; align-items:flex-end; gap:8px; min-width:120px}
+    .qty{
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:6px 8px;
+    }
+    .qty button{
+      width:26px; height:26px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: var(--surface2);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .qty span{min-width:20px; text-align:center; font-weight:900}
+    .remove{
+      border:1px solid rgba(220,38,38,.35);
+      background: rgba(220,38,38,.08);
+      color: rgba(185,28,28,.95);
+      border-radius:999px;
+      padding:6px 10px;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+    }
+    .summary{
+      padding:14px 16px 18px;
+      border-top:1px solid var(--line);
+      background:#fff;
+    }
+    .sumrow{
+      display:flex; justify-content:space-between; align-items:center;
+      margin:8px 0; font-size:13px;
+    }
+    .sumrow small{color:var(--muted)}
+    .total{font-size:16px; font-weight:950}
+    .checkout{
+      margin-top:12px;
+      width:100%;
+      padding:12px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(37,99,235,.55);
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+      color:#fff;
+      cursor:pointer;
+      font-weight:950;
+      box-shadow: 0 14px 28px rgba(37,99,235,.18);
+    }
+    .checkout:disabled{
+      opacity:.5; cursor:not-allowed; box-shadow:none;
+      background:#e5e7eb;
+      border-color:#d1d5db;
+      color:#6b7280;
+    }
+    .clear{
+      width:100%;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: var(--surface2);
+      color:#111827;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+      background:#111827;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+      border-radius: 999px;
+      padding:10px 14px;
+      color:#fff;
+      font-size:13px;
+      display:flex; gap:10px; align-items:center;
+      opacity:0; pointer-events:none;
+      transition:.18s ease;
+      z-index:90;
+    }
+    .toast.on{opacity:1; pointer-events:auto}
+    .dot{
+      width:9px; height:9px; border-radius:999px;
+      background: var(--ok);
+      box-shadow: 0 0 0 5px rgba(22,163,74,.18);
+    }
+
+    /* Floating "to top" */
+    .toTop{
+      position:fixed; right:16px; bottom:16px; z-index:25;
+      border:1px solid var(--line);
+      background:#fff;
+      color:#111827;
+      border-radius: 999px;
+      padding:10px 12px;
+      cursor:pointer;
+      box-shadow: var(--shadow2);
+      display:none;
+      font-weight:900;
+    }
+    .toTop.show{display:inline-flex; gap:8px; align-items:center}
+
+    .footer{
+      margin-top:22px;
+      color:#6b7280;
+      font-size:12px;
+      display:flex; justify-content:space-between; gap:10px;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+
+    @media (max-width: 1020px){
+      .card{grid-column: span 6}
+      .hero{grid-template-columns: 1fr}
+      .longGrid{grid-template-columns: 1fr}
+    }
+    @media (max-width: 640px){
+      .topbar{flex-direction:column; align-items:stretch}
+      .brand{min-width:unset}
+      .actions{justify-content:space-between}
+      .searchArea{max-width:unset; flex-direction:column; align-items:stretch}
+      .card{grid-column: span 12}
+      .nav{justify-content:flex-start}
+    }
+  </style>
+</head>
+<body>
+  <div class="promo">
+    <div class="inner">
+      <span>오늘의 특가 · 베스트셀러 · 무료배송 30,000원</span>
+      <span><a href="#" id="bestLink">베스트 보기</a></span>
+    </div>
+  </div>
+
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 4h10a2 2 0 0 1 2 2v14H8a2 2 0 0 0-2 2V4Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 20h12" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="title">Book Store</div>
+          <span class="sub">긴 페이지 · 섹션 여러 개 · 스크롤 많이</span>
+        </div>
+      </div>
+
+      <div class="searchArea" role="search">
+        <div class="search">
+          <span class="icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <input id="q" type="search" placeholder="도서 검색 (제목/저자)" autocomplete="off" />
+        </div>
+
+        <select id="category" class="select" aria-label="카테고리">
+          <option value="all">전체</option>
+        </select>
+
+        <select id="sort" class="sort" aria-label="정렬">
+          <option value="popular">인기순</option>
+          <option value="price_asc">가격 낮은순</option>
+          <option value="price_desc">가격 높은순</option>
+          <option value="rating_desc">평점 높은순</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="resetBtn" title="필터 초기화">
+          <span aria-hidden="true">↺</span> 초기화
+        </button>
+        <button class="btn primary" id="cartBtn" aria-label="장바구니 열기">
+          <span aria-hidden="true">🛒</span> 장바구니
+          <span class="badge" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+
+    <nav class="nav" aria-label="빠른 카테고리">
+      <button class="chip on" data-chip="all">전체</button>
+      <button class="chip" data-chip="프로그래밍">프로그래밍</button>
+      <button class="chip" data-chip="컴퓨터공학">컴퓨터공학</button>
+      <button class="chip" data-chip="디자인">디자인</button>
+      <button class="chip" data-chip="비즈니스">비즈니스</button>
+      <button class="chip" data-chip="자기계발">자기계발</button>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <main>
+      <!-- HERO -->
+      <section class="hero" aria-label="소개">
+        <div class="heroCard">
+          <h1>베스트셀러부터 실무서까지 한 번에</h1>
+          <p>검색/카테고리/정렬/장바구니/로컬 저장(localStorage)까지 구현된 단일 HTML 데모입니다.</p>
+          <div class="statRow">
+            <div class="stat"><span aria-hidden="true">🚚</span> <b>30,000원</b> 이상 무료배송</div>
+            <div class="stat"><span aria-hidden="true">💾</span> 장바구니 자동 저장</div>
+            <div class="stat"><span aria-hidden="true">⌘K</span> 검색 바로가기</div>
+          </div>
+        </div>
+        <div class="banner">
+          <div>
+            <div class="title">이번 주 추천</div>
+            <div class="desc">섹션이 여러 개라서 아래로 스크롤이 길게 됩니다. (베스트/신간/추천/기획전)</div>
+          </div>
+          <div class="cta">
+            <button class="linkBtn" id="topRatedBtn"><span aria-hidden="true">★</span> 평점순 보기</button>
+            <button class="linkBtn" id="jumpNewBtn"><span aria-hidden="true">🆕</span> 신간으로</button>
+            <button class="linkBtn" id="freeShipBtn"><span aria-hidden="true">🚚</span> 무료배송</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- BEST -->
+      <div class="sectionTop" id="secBest">
+        <h2>베스트셀러</h2>
+        <div class="pill" id="resultPill">총 0권</div>
+      </div>
+      <section class="grid" id="grid" aria-label="상품 목록"></section>
+      <div class="empty" id="empty">조건에 맞는 책이 없습니다. 검색어나 필터를 바꿔보세요.</div>
+
+      <!-- LONG LAYOUT -->
+      <section class="longGrid" aria-label="추천 & 사이드">
+        <div>
+          <div class="sectionTop" id="secNew">
+            <h2>신간 도서</h2>
+            <div class="pill">이번 달 신간 모음</div>
+          </div>
+          <section class="grid" id="gridNew" aria-label="신간 목록"></section>
+
+          <div class="sectionTop" id="secPick">
+            <h2>MD 추천</h2>
+            <div class="pill">취향저격 큐레이션</div>
+          </div>
+          <section class="grid" id="gridPick" aria-label="추천 목록"></section>
+
+          <div class="sectionTop" id="secEvent">
+            <h2>기획전</h2>
+            <div class="pill">할인 · 굿즈 · 세트</div>
+          </div>
+          <div class="box" style="margin-top:12px;">
+            <h3>이번 주 기획전</h3>
+            <div class="list" id="eventList"></div>
+          </div>
+
+          <div class="sectionTop" id="secAll">
+            <h2>전체 도서(추가)</h2>
+            <div class="pill">스크롤 길이용</div>
+          </div>
+          <section class="grid" id="gridAll" aria-label="전체 추가 목록"></section>
+        </div>
+
+        <aside>
+          <div class="box">
+            <h3>실시간 급상승</h3>
+            <div class="list" id="riseList"></div>
+          </div>
+
+          <div class="box" style="margin-top:14px;">
+            <h3>이벤트/광고</h3>
+            <div class="ads">
+              <div class="ad">
+                <div class="k">첫 구매 혜택</div>
+                <div class="d">가입 후 첫 주문 시 추가 적립 혜택(데모)</div>
+                <button class="cta" data-scroll="#secBest">베스트 보러가기</button>
+              </div>
+              <div class="ad">
+                <div class="k">무료배송 맞추기</div>
+                <div class="d">30,000원 이상이면 배송비 0원</div>
+                <button class="cta" id="adFreeShip">장바구니 열기</button>
+              </div>
+              <div class="ad">
+                <div class="k">평점 높은 책 모음</div>
+                <div class="d">평점순으로 정렬해서 보는 데모 버튼</div>
+                <button class="cta" id="adTopRated">평점순 정렬</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <div class="footer">
+        <div>© Book Store Demo</div>
+        <div>샘플 데이터 · 길게 스크롤되는 구조</div>
+      </div>
+    </main>
+  </div>
+
+  <button class="toTop" id="toTop"><span aria-hidden="true">↑</span> TOP</button>
+
+  <!-- Cart Drawer -->
+  <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" aria-label="장바구니">
+    <div class="drawerTop">
+      <div class="h">
+        <span aria-hidden="true">🛒</span> 장바구니
+        <span class="badge" id="cartCount2" style="background:#eef2ff;border-color:#e5e7eb;color:#111827;">0</span>
+      </div>
+      <button class="close" id="closeDrawer"><span aria-hidden="true">✕</span> 닫기</button>
+    </div>
+
+    <div class="drawerBody" id="cartBody"></div>
+
+    <div class="summary">
+      <div class="sumrow"><small>상품 합계</small><span id="sumPrice">₩0</span></div>
+      <div class="sumrow"><small>배송</small><span id="shipPrice">₩0</span></div>
+      <div class="sumrow total"><span>총 결제</span><span id="totalPrice">₩0</span></div>
+      <button class="checkout" id="checkoutBtn" disabled>결제하기</button>
+      <button class="clear" id="clearBtn">장바구니 비우기</button>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span class="dot" aria-hidden="true"></span>
+    <span id="toastText">추가됨</span>
+  </div>
+
+  <script>
+    // ===== Base Data =====
+    const BASE_BOOKS = [
+      { id:"b001", title:"실전 자바스크립트 UI", author:"김개발", category:"프로그래밍", price:24000, rating:4.6, popular:92, desc:"검색/필터/상태관리까지, 웹 UI를 빠르게 만드는 실전 패턴." },
+      { id:"b002", title:"데이터 구조 한 권 정리", author:"이알고", category:"컴퓨터공학", price:18000, rating:4.4, popular:88, desc:"스택/큐/트리/그래프를 문제 관점으로 정리합니다." },
+      { id:"b003", title:"디자인 시스템 가이드", author:"박UX", category:"디자인", price:22000, rating:4.7, popular:95, desc:"토큰/컴포넌트/문서화로 팀 생산성을 끌어올리는 방법." },
+      { id:"b004", title:"프로덕트 매니지먼트 101", author:"최PM", category:"비즈니스", price:20000, rating:4.2, popular:80, desc:"문제 정의부터 실행/지표까지, PM의 기본 흐름을 잡습니다." },
+      { id:"b005", title:"쉽게 읽는 네트워크", author:"정인프라", category:"컴퓨터공학", price:19500, rating:4.3, popular:77, desc:"HTTP, TCP/IP, DNS를 ‘왜’ 중심으로 이해합니다." },
+      { id:"b006", title:"실전 마크다운 글쓰기", author:"홍기록", category:"자기계발", price:15000, rating:4.1, popular:70, desc:"정리 습관을 만드는 최소한의 규칙과 템플릿." },
+      { id:"b007", title:"리액트 컴포넌트 설계", author:"오프론트", category:"프로그래밍", price:27000, rating:4.8, popular:98, desc:"컴포넌트 분리, 상태, 성능까지 실무 관점으로 정리." },
+      { id:"b008", title:"기획을 위한 논리력", author:"서논리", category:"비즈니스", price:16500, rating:4.0, popular:66, desc:"주장-근거-결론을 빠르게 세우는 사고 프레임." },
+      { id:"b009", title:"타이포그래피의 기본", author:"문서체", category:"디자인", price:21000, rating:4.5, popular:84, desc:"읽히는 화면을 만드는 글자/간격/위계의 핵심." }
+    ];
+
+    // ===== Make page LONG: generate many items =====
+    // (베스트/신간/추천/전체추가 섹션에 충분히 깔리도록)
+    function makeBooks(count){
+      const cats = ["프로그래밍","컴퓨터공학","디자인","비즈니스","자기계발"];
+      const words = ["실전","핵심","완전정복","가이드","바로쓰는","한권으로","처음부터","심화","패턴","워크북"];
+      const topics = ["자바","자바스크립트","리액트","스프링","DB","네트워크","자료구조","기획","UX","보안","클라우드","AI"];
+      const authors = ["김개발","이알고","박UX","최PM","정인프라","홍기록","오프론트","서논리","문서체","윤데이터","한클라우드","송보안"];
+
+      const out = [];
+      for(let i=0;i<count;i++){
+        const base = BASE_BOOKS[i % BASE_BOOKS.length];
+        const cat = cats[i % cats.length];
+        const title = `${words[i % words.length]} ${topics[i % topics.length]} ${100 + (i%900)}`;
+        const author = authors[i % authors.length];
+        const price = 12000 + ((i*700) % 28000);
+        const rating = (3.8 + ((i*13)%11)/10); // 3.8 ~ 4.8
+        const popular = 50 + ((i*17) % 50);    // 50 ~ 99
+        const desc = `${base.desc} (확장 아이템 ${i+1})`;
+        out.push({
+          id: `g${String(i+1).padStart(3,"0")}`,
+          title,
+          author,
+          category: cat,
+          price,
+          rating: Math.min(4.9, Number(rating.toFixed(1))),
+          popular,
+          desc
+        });
+      }
+      return out;
+    }
+
+    // 총 90권 정도로 길게
+    const BOOKS = [...BASE_BOOKS, ...makeBooks(90)];
+
+    // ===== Helpers =====
+    const KRW = new Intl.NumberFormat("ko-KR", { style:"currency", currency:"KRW" });
+    const LS_KEY = "bookstore_cart_v3_long";
+    const UI_KEY = "bookstore_ui_v3_long";
+
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function debounce(fn, wait=160){
+      let t=null;
+      return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), wait); };
+    }
+
+    // ===== State =====
+    const state = {
+      q:"",
+      category:"all",
+      sort:"popular",
+      cart: loadCart()
+    };
+
+    // ===== Elements =====
+    const gridEl = document.getElementById("grid");
+    const gridNewEl = document.getElementById("gridNew");
+    const gridPickEl = document.getElementById("gridPick");
+    const gridAllEl = document.getElementById("gridAll");
+
+    const emptyEl = document.getElementById("empty");
+    const pillEl = document.getElementById("resultPill");
+
+    const qEl = document.getElementById("q");
+    const categoryEl = document.getElementById("category");
+    const sortEl = document.getElementById("sort");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const cartBtn = document.getElementById("cartBtn");
+    const drawer = document.getElementById("drawer");
+    const backdrop = document.getElementById("backdrop");
+    const closeDrawerBtn = document.getElementById("closeDrawer");
+    const cartBody = document.getElementById("cartBody");
+    const cartCount = document.getElementById("cartCount");
+    const cartCount2 = document.getElementById("cartCount2");
+    const sumPriceEl = document.getElementById("sumPrice");
+    const shipPriceEl = document.getElementById("shipPrice");
+    const totalPriceEl = document.getElementById("totalPrice");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+
+    const bestLink = document.getElementById("bestLink");
+    const topRatedBtn = document.getElementById("topRatedBtn");
+    const jumpNewBtn = document.getElementById("jumpNewBtn");
+    const freeShipBtn = document.getElementById("freeShipBtn");
+
+    const riseList = document.getElementById("riseList");
+    const eventList = document.getElementById("eventList");
+
+    const chips = Array.from(document.querySelectorAll("[data-chip]"));
+
+    const toTopBtn = document.getElementById("toTop");
+
+    // ===== Init =====
+    initCategoryOptions();
+    restoreUI();
+    syncUI();
+    renderAllSections();
+    renderCartBadge();
+    renderSideLists();
+
+    // ===== Events =====
+    qEl.addEventListener("input", debounce(() => {
+      state.q = qEl.value.trim();
+      persistUI();
+      renderAllSections();
+    }));
+
+    categoryEl.addEventListener("change", () => {
+      state.category = categoryEl.value;
+      setChip(state.category);
+      persistUI();
+      renderAllSections();
+    });
+
+    sortEl.addEventListener("change", () => {
+      state.sort = sortEl.value;
+      persistUI();
+      renderAllSections();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      state.q=""; state.category="all"; state.sort="popular";
+      syncUI();
+      persistUI();
+      renderAllSections();
+      showToast("초기화 완료");
+    });
+
+    chips.forEach(ch => ch.addEventListener("click", () => {
+      const cat = ch.getAttribute("data-chip");
+      state.category = cat;
+      categoryEl.value = cat;
+      setChip(cat);
+      persistUI();
+      renderAllSections();
+    }));
+
+    cartBtn.addEventListener("click", openDrawer);
+    closeDrawerBtn.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+
+    clearBtn.addEventListener("click", () => {
+      state.cart = {};
+      saveCart();
+      renderCart();
+      showToast("장바구니를 비웠습니다");
+    });
+
+    checkoutBtn.addEventListener("click", () => {
+      const { totalCount, sum } = calcCartTotals();
+      if (totalCount === 0) return;
+      const ship = calcShipping(sum);
+      alert(`결제 데모입니다.\n\n상품 수: ${totalCount}개\n총 결제: ${KRW.format(sum + ship)}\n\n(여기서 실제 결제 연동을 붙이면 됩니다)`);
+    });
+
+    bestLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      state.sort = "popular";
+      sortEl.value = "popular";
+      persistUI();
+      renderAllSections();
+      showToast("베스트(인기순) 정렬");
+      scrollToId("#secBest");
+    });
+
+    topRatedBtn.addEventListener("click", () => {
+      state.sort = "rating_desc";
+      sortEl.value = "rating_desc";
+      persistUI();
+      renderAllSections();
+      showToast("평점순 정렬");
+      scrollToId("#secBest");
+    });
+
+    jumpNewBtn.addEventListener("click", () => scrollToId("#secNew"));
+
+    freeShipBtn.addEventListener("click", () => {
+      openDrawer();
+      showToast("30,000원 이상 무료배송");
+    });
+
+    document.getElementById("adFreeShip").addEventListener("click", () => openDrawer());
+    document.getElementById("adTopRated").addEventListener("click", () => topRatedBtn.click());
+    document.querySelectorAll("[data-scroll]").forEach(b => {
+      b.addEventListener("click", () => scrollToId(b.getAttribute("data-scroll")));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeDrawer();
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        qEl.focus();
+      }
+    });
+
+    window.addEventListener("scroll", () => {
+      toTopBtn.classList.toggle("show", window.scrollY > 600);
+    });
+    toTopBtn.addEventListener("click", () => window.scrollTo({ top:0, behavior:"smooth" }));
+
+    // ===== Functions =====
+    function scrollToId(sel){
+      const el = document.querySelector(sel);
+      if(!el) return;
+      el.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+
+    function initCategoryOptions(){
+      const set = new Set(BOOKS.map(b => b.category));
+      const cats = ["all", ...Array.from(set)];
+      categoryEl.innerHTML = cats.map(c => {
+        const label = c === "all" ? "전체" : c;
+        return `<option value="${escapeHTML(c)}">${escapeHTML(label)}</option>`;
+      }).join("");
+    }
+
+    function setChip(cat){
+      chips.forEach(x => x.classList.toggle("on", x.getAttribute("data-chip") === cat));
+    }
+
+    function syncUI(){
+      qEl.value = state.q;
+      categoryEl.value = state.category;
+      sortEl.value = state.sort;
+      setChip(state.category);
+    }
+
+    function persistUI(){
+      localStorage.setItem(UI_KEY, JSON.stringify({ q: state.q, category: state.category, sort: state.sort }));
+    }
+
+    function restoreUI(){
+      try{
+        const raw = localStorage.getItem(UI_KEY);
+        if(!raw) return;
+        const ui = JSON.parse(raw);
+        if(typeof ui.q === "string") state.q = ui.q;
+        if(typeof ui.category === "string") state.category = ui.category;
+        if(typeof ui.sort === "string") state.sort = ui.sort;
+      }catch(_){}
+    }
+
+    function loadCart(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return {};
+        const obj = JSON.parse(raw);
+        if(obj && typeof obj === "object") return obj;
+        return {};
+      }catch(_){ return {}; }
+    }
+
+    function saveCart(){
+      localStorage.setItem(LS_KEY, JSON.stringify(state.cart));
+    }
+
+    function openDrawer(){
+      backdrop.classList.add("on");
+      drawer.classList.add("on");
+      backdrop.setAttribute("aria-hidden","false");
+      renderCart();
+    }
+
+    function closeDrawer(){
+      backdrop.classList.remove("on");
+      drawer.classList.remove("on");
+      backdrop.setAttribute("aria-hidden","true");
+    }
+
+    function getFilteredSortedBooks(){
+      const q = state.q.toLowerCase();
+      let list = BOOKS.filter(b => {
+        const matchesQ = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q);
+        const matchesCat = state.category === "all" ? true : b.category === state.category;
+        return matchesQ && matchesCat;
+      });
+
+      switch(state.sort){
+        case "price_asc": list.sort((a,b)=>a.price-b.price); break;
+        case "price_desc": list.sort((a,b)=>b.price-a.price); break;
+        case "rating_desc": list.sort((a,b)=>b.rating-a.rating); break;
+        case "popular":
+        default: list.sort((a,b)=>b.popular-a.popular); break;
+      }
+      return list;
+    }
+
+    function pickSlice(list, start, count){
+      return list.slice(start, start + count);
+    }
+
+    function renderAllSections(){
+      const list = getFilteredSortedBooks();
+      pillEl.textContent = `총 ${list.length}권`;
+
+      // 베스트: 상위 18개
+      renderGrid(gridEl, pickSlice(list, 0, 18));
+
+      // 신간: 다음 18개
+      renderGrid(gridNewEl, pickSlice(list, 18, 18));
+
+      // MD 추천: 다음 18개
+      renderGrid(gridPickEl, pickSlice(list, 36, 18));
+
+      // 전체 추가: 다음 36개
+      renderGrid(gridAllEl, pickSlice(list, 54, 36));
+
+      // 검색 결과가 너무 적을 때: 베스트 섹션 기준으로 empty 처리
+      const hasAny = list.length > 0;
+      emptyEl.style.display = hasAny ? "none" : "block";
+    }
+
+    function renderGrid(container, books){
+      if(!container) return;
+      if(!books || books.length === 0){
+        container.innerHTML = "";
+        return;
+      }
+      container.innerHTML = books.map(b => `
+        <article class="card">
+          <div class="cover" aria-hidden="true">
+            <span class="label">${escapeHTML(b.category)}</span>
+            <span class="rating"><span aria-hidden="true">★</span> ${Number(b.rating).toFixed(1)}</span>
+          </div>
+          <div class="info">
+            <div class="name">${escapeHTML(b.title)}</div>
+            <div class="meta">
+              <span>저자 ${escapeHTML(b.author)}</span>
+              <span>인기도 ${b.popular}</span>
+            </div>
+            <div class="desc">${escapeHTML(b.desc)}</div>
+            <div class="row">
+              <div class="price">${KRW.format(b.price)} <small>/권</small></div>
+              <button class="add" data-add="${escapeHTML(b.id)}"><span aria-hidden="true">＋</span> 담기</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+
+      container.querySelectorAll("[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => addToCart(btn.getAttribute("data-add"), 1));
+      });
+    }
+
+    function renderSideLists(){
+      // 실시간 급상승: 인기값 기준 상위 10
+      const rise = [...BOOKS].sort((a,b)=>b.popular-a.popular).slice(0, 10);
+      riseList.innerHTML = rise.map((b, i) => `
+        <div class="mini">
+          <div class="dotCover" aria-hidden="true"></div>
+          <div style="min-width:0;">
+            <div class="t">${i+1}. ${escapeHTML(b.title)}</div>
+            <div class="s">${escapeHTML(b.author)} · ${escapeHTML(b.category)}</div>
+          </div>
+          <button class="buy" data-add="${escapeHTML(b.id)}">담기</button>
+        </div>
+      `).join("");
+
+      // 기획전: 길이용 더미 12개
+      const events = Array.from({length: 12}).map((_,i)=>({
+        title: `기획전 ${i+1}: ${["세트 할인","굿즈 증정","주말 특가","신간 모음","베스트 모음","무료배송"][i%6]}`,
+        desc: "설명은 데모용이며, 클릭하면 해당 섹션으로 이동합니다."
+      }));
+      eventList.innerHTML = events.map((e, i) => `
+        <div class="mini">
+          <div class="dotCover" aria-hidden="true"></div>
+          <div style="min-width:0;">
+            <div class="t">${escapeHTML(e.title)}</div>
+            <div class="s">${escapeHTML(e.desc)}</div>
+          </div>
+          <button class="buy" data-scroll="${i%2===0 ? "#secBest" : "#secNew"}">이동</button>
+        </div>
+      `).join("");
+
+      // 버튼 이벤트
+      document.querySelectorAll(".mini .buy[data-add]").forEach(btn => {
+        btn.addEventListener("click", () => addToCart(btn.getAttribute("data-add"), 1));
+      });
+      document.querySelectorAll(".mini .buy[data-scroll]").forEach(btn => {
+        btn.addEventListener("click", () => scrollToId(btn.getAttribute("data-scroll")));
+      });
+    }
+
+    function addToCart(bookId, qty){
+      const book = BOOKS.find(b => b.id === bookId);
+      if(!book) return;
+
+      const cur = Number(state.cart[bookId] || 0);
+      state.cart[bookId] = cur + qty;
+      if(state.cart[bookId] <= 0) delete state.cart[bookId];
+
+      saveCart();
+      renderCartBadge();
+      showToast(`담김: ${book.title}`);
+    }
+
+    function setCartQty(bookId, qty){
+      if(qty <= 0) delete state.cart[bookId];
+      else state.cart[bookId] = qty;
+
+      saveCart();
+      renderCart();
+      renderCartBadge();
+    }
+
+    function calcCartTotals(){
+      let totalCount = 0;
+      let sum = 0;
+      for(const [id, qtyRaw] of Object.entries(state.cart)){
+        const qty = Number(qtyRaw || 0);
+        const book = BOOKS.find(b => b.id === id);
+        if(!book || qty <= 0) continue;
+        totalCount += qty;
+        sum += book.price * qty;
+      }
+      return { totalCount, sum };
+    }
+
+    function calcShipping(sum){
+      if(sum === 0) return 0;
+      return sum >= 30000 ? 0 : 2500;
+    }
+
+    function renderCartBadge(){
+      const { totalCount } = calcCartTotals();
+      cartCount.textContent = String(totalCount);
+      cartCount2.textContent = String(totalCount);
+    }
+
+    function renderCart(){
+      const items = Object.entries(state.cart)
+        .map(([id, qtyRaw]) => {
+          const qty = Number(qtyRaw || 0);
+          const book = BOOKS.find(b => b.id === id);
+          if(!book || qty <= 0) return null;
+          return { book, qty };
+        })
+        .filter(Boolean);
+
+      if(items.length === 0){
+        cartBody.innerHTML = `<div class="cart-empty">장바구니가 비어있습니다. 책을 담아보세요.</div>`;
+      }else{
+        cartBody.innerHTML = items.map(({book, qty}) => {
+          const subtotal = book.price * qty;
+          return `
+            <div class="item">
+              <div class="top">
+                <div>
+                  <div class="name">${escapeHTML(book.title)}</div>
+                  <div class="sub">저자 ${escapeHTML(book.author)} · ${escapeHTML(book.category)}</div>
+                </div>
+                <div class="right">
+                  <div style="font-weight:950">${KRW.format(subtotal)}</div>
+                  <button class="remove" data-remove="${escapeHTML(book.id)}">삭제</button>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                <div style="color:#6b7280; font-size:12px;">단가 ${KRW.format(book.price)}</div>
+                <div class="qty" aria-label="수량 조절">
+                  <button data-dec="${escapeHTML(book.id)}" aria-label="수량 감소">−</button>
+                  <span>${qty}</span>
+                  <button data-inc="${escapeHTML(book.id)}" aria-label="수량 증가">＋</button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        cartBody.querySelectorAll("[data-inc]").forEach(b => {
+          b.addEventListener("click", () => {
+            const id = b.getAttribute("data-inc");
+            const cur = Number(state.cart[id] || 0);
+            setCartQty(id, cur + 1);
+          });
+        });
+        cartBody.querySelectorAll("[data-dec]").forEach(b => {
+          b.addEventListener("click", () => {
+            const id = b.getAttribute("data-dec");
+            const cur = Number(state.cart[id] || 0);
+            setCartQty(id, cur - 1);
+          });
+        });
+        cartBody.querySelectorAll("[data-remove]").forEach(b => {
+          b.addEventListener("click", () => {
+            const id = b.getAttribute("data-remove");
+            setCartQty(id, 0);
+            showToast("삭제됨");
+          });
+        });
+      }
+
+      const { totalCount, sum } = calcCartTotals();
+      const ship = calcShipping(sum);
+      sumPriceEl.textContent = KRW.format(sum);
+      shipPriceEl.textContent = KRW.format(ship);
+      totalPriceEl.textContent = KRW.format(sum + ship);
+      checkoutBtn.disabled = totalCount === 0;
+      renderCartBadge();
+    }
+
+    function showToast(msg){
+      toastText.textContent = msg;
+      toast.classList.add("on");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove("on"), 1400);
+    }
+  </script>
+</body>
+</html>
+ㄴㅇㄻㄴㅇㄹ
