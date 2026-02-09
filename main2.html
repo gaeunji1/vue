@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blue Fox | Performance & Collaboration</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+  <style>
+    :root {
+      --bg: #000212;
+
+      --blue: #2563EB;
+
+      --border: rgba(255, 255, 255, 0.08);
+      --text-main: #ffffff;
+      --text-sub: #b4bcd0;
+
+      --blue-12: rgba(37, 99, 235, 0.12);
+      --blue-16: rgba(37, 99, 235, 0.16);
+      --blue-18: rgba(37, 99, 235, 0.18);
+      --blue-25: rgba(37, 99, 235, 0.25);
+      --blue-28: rgba(37, 99, 235, 0.28);
+      --blue-35: rgba(37, 99, 235, 0.35);
+      --blue-42: rgba(37, 99, 235, 0.42);
+      --blue-95: rgba(37, 99, 235, 0.95);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Pretendard', sans-serif;
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+      z-index: -1;
+    }
+
+    .scroll-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .section {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      scroll-snap-align: start;
+      position: relative;
+      padding: 0 10%;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .blue { color: var(--blue); -webkit-text-fill-color: var(--blue); }
+
+    .tagline {
+      display: inline-block;
+      font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.85);
+      -webkit-text-fill-color: rgba(255,255,255,0.85);
+      margin-bottom: 8px;
+    }
+
+    .hero-content { text-align: center; }
+    .hero-content p {
+      font-size: 1.25rem;
+      color: var(--text-sub);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.2s; }
+    .delay-3 { transition-delay: 0.3s; }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+
+      background: var(--blue-12);
+      border: 1px solid var(--blue-25);
+
+      border-radius: 100px;
+      color: var(--blue);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .cta-group { display: flex; gap: 12px; justify-content: center; }
+
+    .cta-primary {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+    }
+    .cta-primary:hover {
+      filter: brightness(0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px var(--blue-28);
+    }
+
+    .cta-secondary {
+      background: rgba(255,255,255,0.03);
+      color: white;
+      border: 1px solid var(--border);
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .cta-secondary:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.14);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .container.reverse { flex-direction: row-reverse; }
+    .text { flex: 1; }
+    .text p { font-size: 1.15rem; color: var(--text-sub); }
+
+    .mock-ui {
+      flex: 1.2;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      position: relative;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      overflow: hidden;
+    }
+
+    .mock-ui::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background:
+        radial-gradient(circle at 30% 10%, var(--blue-25), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06), transparent 55%);
+      pointer-events: none;
+    }
+
+    .ui-header {
+      background: rgba(255,255,255,0.03);
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dot-win { width: 10px; height: 10px; border-radius: 50%; }
+    .red { background: #ff5f56; }
+    .yellow { background: #ffbd2e; }
+    .green { background: #27c93f; }
+
+    .ui-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100% - 40px);
+      color: var(--text-main);
+      font-size: 1.1rem;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+    }
+
+    .code-font {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: rgba(0,0,0,0.25);
+      width: 82%;
+      height: 62%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .glow {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 70%; height: 50%;
+      background: radial-gradient(circle, var(--blue-16) 0%, transparent 70%);
+      filter: blur(110px);
+      z-index: -1;
+    }
+
+    .hero-content h1 .blue {
+      color: var(--blue);
+      -webkit-text-fill-color: var(--blue);
+      text-shadow: 0 0 30px var(--blue-42);
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 18px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,2,18,0.35);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .logo span {
+      background: linear-gradient(180deg, #fff 0%, rgba(255,255,255,0.78) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 18px var(--blue-18));
+    }
+
+    .dots {
+      position: fixed;
+      right: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .dot.active {
+      background: var(--blue);
+      box-shadow: 0 0 16px var(--blue-95);
+      transform: scale(1.35);
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .btn-github {
+      background: rgba(255,255,255,0.02);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-github:hover {
+      border-color: var(--blue-35);
+      box-shadow: 0 10px 26px var(--blue-18);
+      transform: translateY(-1px);
+    }
+
+    .cta-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.25);
+      pointer-events: none;
+    }
+
+    @media (max-width: 960px) {
+      .section { padding: 0 7%; }
+      .container, .container.reverse { flex-direction: column; gap: 34px; }
+      .mock-ui { width: 100%; }
+      .dots { right: 18px; }
+      .navbar { padding: 16px 20px; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="bluefox-logo.png" alt="Blue Fox Logo" />
+      <span>Blue Fox</span>
+    </div>
+    <div class="nav-menu">
+      <button class="btn-github">Login</button>
+    </div>
+  </nav>
+
+  <div class="dots">
+    <div class="dot active" data-section="0"></div>
+    <div class="dot" data-section="1"></div>
+    <div class="dot" data-section="2"></div>
+    <div class="dot" data-section="3"></div>
+    <div class="dot" data-section="4"></div>
+  </div>
+
+  <main class="scroll-container">
+    <section class="section hero">
+      <div class="hero-content">
+        <div class="badge reveal">In progress: Blue Fox</div>
+
+        <h1 class="reveal delay-1">
+          <span class="tagline">성능 테스트로 병목을 찾아, 코드를 개선한다.</span><br />
+          <span class="blue">Blue  Fox</span>
+        </h1>
+
+        <p class="reveal delay-2">
+          단순한 분석을 넘어 시스템의 한계를 돌파합니다.<br />
+          가장 민첩한 AI 성능 최적화 파트너, 블루폭스와 함께하세요.<br />
+          <span class="blue">문구 미완성입니다. 추천부탁합니다</span></span>
+        </p>
+
+        <div class="cta-group reveal delay-3">
+          <button class="cta-secondary" onclick="document.querySelectorAll('.feature')[0].scrollIntoView({behavior:'smooth'})">
+            Explore Features
+          </button>
+          <button class="cta-primary">Login</button>
+        </div>
+      </div>
+      <div class="glow"></div>
+    </section>
+
+    <section class="section feature">
+      <div class="container">
+        <div class="mock-ui reveal">
+          <div class="ui-header">
+            <span class="dot-win red"></span><span class="dot-win yellow"></span><span class="dot-win green"></span>
+          </div>
+          <div class="ui-content">📊 Load Test Dashboard</div>
+        </div>
+        <div class="text">
+          <h2 class="reveal delay-1">01. Real-time Analysis</h2>
+          <p class="reveal delay-2">시스템 한계를 실시간으로 측정하세요. <br />Linear한 확장성을 방해하는 병목 지점을 AI가 즉시 식별합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section feature">
+      <div class="container reverse">
+        <div class="mock-ui reveal">
+          <div class="ui-header">
+            <span class="dot-win red"></span><span class="dot-win yellow"></span><span class="dot-win green"></span>
+          </div>
+          <div class="ui-content code-font">
+            <span style="color:#7aa2f7;">function</span>&nbsp;<span style="color:#f7c66d;">optimize</span>() { ... }
+          </div>
+        </div>
+        <div class="text">
+          <h2 class="reveal delay-1">02. Live Hotfix</h2>
+          <p class="reveal delay-2">결과를 보며 즉각적인 코드를 수정하세요. <br />복잡한 배포 파이프라인 없이도 성능 개선의 결과를 즉시 확인합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section feature">
+      <div class="container">
+        <div class="mock-ui reveal">
+          <div class="ui-header">
+            <span class="dot-win red"></span><span class="dot-win yellow"></span><span class="dot-win green"></span>
+          </div>
+          <div class="ui-content">👥 Collaboration Hub</div>
+        </div>
+        <div class="text">
+          <h2 class="reveal delay-1">03. Code Conference</h2>
+          <p class="reveal delay-2">팀원들과 동일한 캔버스에서 코드를 공유하며 논의하세요. <br />동기화된 에디터가 협업의 밀도를 높여줍니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section feature">
+      <div class="container reverse">
+        <div class="mock-ui reveal">
+          <div class="ui-header">
+            <span class="dot-win red"></span><span class="dot-win yellow"></span><span class="dot-win green"></span>
+          </div>
+          <div class="ui-content">🤖 AI Intelligence</div>
+        </div>
+        <div class="text">
+          <h2 class="reveal delay-1">04. AI Intelligence</h2>
+          <p class="reveal delay-2">단순 수치를 넘어 최적화 가이드를 제안받으세요. <br />수천 개의 케이스를 학습한 AI가 정답을 알려드립니다.</p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        &copy; 2026 Blue Fox Team. Powered by SSAFY.
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const scrollContainer = document.querySelector('.scroll-container');
+    const sections = document.querySelectorAll('.section');
+    const dots = document.querySelectorAll('.dot');
+
+    const observerOptions = { threshold: 0.2 };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+        else entry.target.classList.remove('active');
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    function updateActiveSection() {
+      let currentSectionIndex = 0;
+
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+          currentSectionIndex = index;
+        }
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSectionIndex);
+      });
+    }
+
+    scrollContainer.addEventListener('scroll', () => {
+      requestAnimationFrame(updateActiveSection);
+    });
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        sections[index].scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    updateActiveSection();
+  </script>
+</body>
+</html>
+asdfasdfadf
